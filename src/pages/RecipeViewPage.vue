@@ -56,10 +56,16 @@ export default {
       try {
         response = await this.axios.get(
           // "https://test-for-3-2.herokuapp.com/recipes/info",
-          this.$root.store.server_domain + "/recipes/info",
+          // this.$root.store.server_domain + "/recipes/info",
+          // {
+          //   params: { id: this.$route.params.recipeId }
+          // }
+          ///////////////////////////////////////////////////////////////////////////////////////
+          this.$root.store.server_domain + "/recipes/",
           {
             params: { id: this.$route.params.recipeId }
           }
+          ///////////////////////////////////////////////////////////////////////////////////////
         );
 
         // console.log("response.status", response.status);
@@ -70,15 +76,31 @@ export default {
         return;
       }
 
+      // let {
+      //   analyzedInstructions,
+      //   instructions,
+      //   extendedIngredients,
+      //   aggregateLikes,
+      //   readyInMinutes,
+      //   image,
+      //   title
+      // } = response.data.recipe;
+
+//////////////////////////////////////////////////////////////////////
       let {
-        analyzedInstructions,
-        instructions,
-        extendedIngredients,
-        aggregateLikes,
-        readyInMinutes,
-        image,
-        title
-      } = response.data.recipe;
+          user_id,
+          username,
+          recipe_id,
+          title,
+          image,
+          how_to_make,
+          time_to_make,
+          likes,
+          is_vegan,
+          is_gluten_free,
+          servings
+        } = response.data[0];
+//////////////////////////////////////////////////////////////////////
 
       let _instructions = analyzedInstructions
         .map((fstep) => {
@@ -87,18 +109,37 @@ export default {
         })
         .reduce((a, b) => [...a, ...b], []);
 
-      let _recipe = {
-        instructions,
-        _instructions,
-        analyzedInstructions,
-        extendedIngredients,
-        aggregateLikes,
-        readyInMinutes,
+      // let _recipe = {
+      //   instructions,
+      //   _instructions,
+      //   analyzedInstructions,
+      //   extendedIngredients,
+      //   aggregateLikes,
+      //   readyInMinutes,
+      //   image,
+      //   title
+      // };
+
+      // this.recipe = _recipe;
+
+//////////////////////////////////////////////////////////////////////
+
+      this.recipe = {
+        user_id,
+        username,
+        recipe_id,
+        title,
         image,
-        title
+        how_to_make,
+        time_to_make,
+        likes,
+        is_vegan,
+        is_gluten_free,
+        servings
       };
 
-      this.recipe = _recipe;
+//////////////////////////////////////////////////////////////////////
+
     } catch (error) {
       console.log(error);
     }

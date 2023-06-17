@@ -3,6 +3,9 @@
     <div id="nav">
       <router-link :to="{ name: 'main' }">Vue Recipes</router-link>|
       <router-link :to="{ name: 'search' }">Search</router-link>|
+      <router-link :to="{ name: 'myrecipespage' }">My Recipes</router-link>|
+      <router-link :to="{ name: 'model' }">Model</router-link>|
+      <router-link :to="{ name: 'about' }">About</router-link>|
       {{ !$root.store.username }}
       <span v-if="!$root.store.username">
         Guest:
@@ -11,6 +14,7 @@
       </span>
       <span v-else>
         {{ $root.store.username }}: <button @click="Logout">Logout</button>|
+
       </span>
     </div>
     <router-view />

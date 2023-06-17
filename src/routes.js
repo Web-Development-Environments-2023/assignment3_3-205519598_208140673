@@ -28,10 +28,26 @@ const routes = [
     component: () => import("./pages/RecipeViewPage"),
   },
   {
+    path: "/myrecipespage",
+    name: "myrecipespage",
+    component: () => import("./pages/MyRecipesPage"),
+  },
+  {
+    path: "/model",
+    name: "model",
+    component: () => import("./components/CreateRecipeModal"),
+  },
+  {
+    path: "/about",
+    name: "about",
+    component: () => import("./pages/AboutPage"),
+  },
+  {
     path: "*",
     name: "notFound",
     component: NotFound,
   },
+
 ];
 
 export default routes;

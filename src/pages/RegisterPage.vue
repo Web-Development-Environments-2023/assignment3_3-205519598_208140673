@@ -25,6 +25,42 @@
         </b-form-invalid-feedback>
       </b-form-group>
 
+      
+      <b-form-group
+        id="input-group-firstName"
+        label-cols-sm="3"
+        label="First Name:"
+        label-for="firstName"
+      >
+        <b-form-input
+          id="firstName"
+          v-model="$v.form.firstName.$model"
+          type="text"
+          :state="validateState('firstName')"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!$v.form.firstName.required">
+          First name is required
+        </b-form-invalid-feedback>
+      </b-form-group>
+
+      <b-form-group
+        id="input-group-lastName"
+        label-cols-sm="3"
+        label="Last Name:"
+        label-for="lastName"
+      >
+        <b-form-input
+          id="lastName"
+          v-model="$v.form.lastName.$model"
+          type="text"
+          :state="validateState('lastName')"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!$v.form.lastName.required">
+          Last name is required
+        </b-form-invalid-feedback>
+      </b-form-group>
+
+
       <b-form-group
         id="input-group-country"
         label-cols-sm="3"
@@ -89,6 +125,31 @@
           The confirmed password is not equal to the original password
         </b-form-invalid-feedback>
       </b-form-group>
+
+
+
+      <b-form-group
+        id="input-group-email"
+        label-cols-sm="3"
+        label="Email:"
+        label-for="email"
+      >
+        <b-form-input
+          id="email"
+          v-model="$v.form.email.$model"
+          type="email"
+          :state="validateState('email')"
+        ></b-form-input>
+        <b-form-invalid-feedback v-if="!$v.form.email.required">
+          Email is required
+        </b-form-invalid-feedback>
+        <b-form-invalid-feedback v-else-if="!$v.form.email.email">
+          Please enter a valid email
+        </b-form-invalid-feedback>
+      </b-form-group>
+
+
+
 
       <b-button type="reset" variant="danger">Reset</b-button>
       <b-button
@@ -156,6 +217,12 @@ export default {
         length: (u) => minLength(3)(u) && maxLength(8)(u),
         alpha
       },
+      firstName: {
+        required,
+      },
+      lastName: {
+        required,
+      },
       country: {
         required
       },
@@ -166,6 +233,10 @@ export default {
       confirmedPassword: {
         required,
         sameAsPassword: sameAs("password")
+      },
+      email: {
+        required,
+        email,
       }
     }
   },
@@ -186,8 +257,13 @@ export default {
           this.$root.store.server_domain + "/Register",
 
           {
-            username: this.form.username,
-            password: this.form.password
+          // user_id: '', // You need to generate or get this user_id from somewhere
+          username: this.form.username,
+          firstname: this.form.firstName, // Adjust the field according to the data you have
+          lastname: this.form.lastName, // Adjust the field according to the data you have
+          country: this.form.country, // Adjust the field according to the data you have
+          password: this.form.password,
+          email: this.form.email
           }
         );
         this.$router.push("/login");
