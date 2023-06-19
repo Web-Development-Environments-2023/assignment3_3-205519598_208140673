@@ -3,8 +3,9 @@
     <h1 class="title">Main Page</h1>
     <!-- <RecipePreviewList title="Randome Recipes" class="RandomRecipes center" /> -->
     <!-- <router-link v-if="!$root.store.username" to="/login" tag="button">You need to Login to vue this</router-link>
+    <router-link v-if="!$root.store.username" to="/login" tag="button">You need to Login to vue this</router-link>
     {{ !$root.store.username }}
-    <RecipePreviewList
+     <RecipePreviewList
       title="Last Viewed Recipes"
       :class="{
         RandomRecipes: true,
