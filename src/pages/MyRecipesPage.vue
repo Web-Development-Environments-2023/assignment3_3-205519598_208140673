@@ -25,13 +25,13 @@
       };
     },
     methods: {
-      fetchFavoriteRecipes() {
+      fetchMyRecipes() {
         return this.axios.get(this.$root.store.server_domain + "/users/myrecepies", { withCredentials: true });
       },
     },
     async mounted() {
       try {
-        const response = await this.fetchFavoriteRecipes();
+        const response = await this.fetchMyRecipes();
         this.recipes = response.data;
       } catch (error) {
         console.log(error);
