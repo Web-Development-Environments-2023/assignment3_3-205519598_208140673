@@ -1,9 +1,9 @@
 <template>
     <div>
-      <h1>My Favorite Recipes</h1>
+      <h1>My Recipes</h1>
       <b-container>
         <b-row>
-          <b-col v-for="r in recipes" :key="r.recipe_id">
+          <b-col v-for="r in recipes" :key="r.id">
             <RecipePreview :recipe="r" />
           </b-col>
         </b-row>
@@ -26,6 +26,8 @@
     },
     methods: {
       fetchMyRecipes() {
+        console.log("the data")
+        console.log(this.axios.get(this.$root.store.server_domain + "/users/myrecepies", { withCredentials: true }))
         return this.axios.get(this.$root.store.server_domain + "/users/myrecepies", { withCredentials: true });
       },
     },

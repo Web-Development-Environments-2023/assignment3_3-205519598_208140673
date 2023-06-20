@@ -122,7 +122,8 @@
         >
           <b-form-checkbox
             id="is-vegan-input"
-            v-model="isVegan"
+            :checked="isVegan === 'yes'"
+            @change="updateIsVegan"
             :state="isVeganState"
           ></b-form-checkbox>
         </b-form-group>
@@ -134,7 +135,8 @@
         >
           <b-form-checkbox
             id="is-gluten-free-input"
-            v-model="isGlutenFree"
+            :checked="isGlutenFree === 'yes'"
+            @change="updateIsGlutenFree"
             :state="isGlutenFreeState"
           ></b-form-checkbox>
         </b-form-group>
@@ -152,6 +154,16 @@
             required
           ></b-form-input>
         </b-form-group>
+        <b-form-group
+          label="Instructions"
+          label-for="instructions-input"
+        >
+          <b-form-textarea
+            id="instructions-input"
+            v-model="instructions"
+            placeholder="Add your instructions to the recipe separated by commas"
+          ></b-form-textarea>
+        </b-form-group>
       </form>
     </b-modal>
   </div>
@@ -168,12 +180,13 @@ export default {
       ingredients: [], // Array to hold the ingredients
       timeToMake: "",
       timeToMakeState: null,
-      isVegan: "no", // Updated to string type
+      isVegan: "no", 
       isVeganState: null,
-      isGlutenFree: "no", // Updated to string type
+      isGlutenFree: "no",
       isGlutenFreeState: null,
       servingSize: "",
       servingSizeState: null,
+      instructions: "",
       submittedRecipes: [],
       form: {
         submitError: null,
@@ -186,8 +199,8 @@ export default {
         this.titleState = this.title ? true : false;
         this.imageState = this.image ? true : false;
         this.timeToMakeState = this.timeToMake ? true : false;
-        this.isVeganState = true; // Assuming it's always valid
-        this.isGlutenFreeState = true; // Assuming it's always valid
+        // this.isVeganState = true; // Assuming it's always valid
+        // this.isGlutenFreeState = true; // Assuming it's always valid
         this.servingSizeState = /^\d+$/.test(this.servingSize); // Use regex to validate if it's a valid number
 
         // Check each ingredient's validity
@@ -199,6 +212,13 @@ export default {
 
         return valid && this.servingSizeState;
       },
+    updateIsVegan() {
+        this.isVegan = this.isVegan === 'yes' ? 'no' : 'yes';
+      },
+
+    updateIsGlutenFree() {
+        this.isGlutenFree = this.isGlutenFree === 'yes' ? 'no' : 'yes';
+      },
 
     resetModal() {
       this.title = "";
@@ -208,9 +228,9 @@ export default {
       this.ingredients = []; // Reset the ingredients array
       this.timeToMake = "";
       this.timeToMakeState = null;
-      this.isVegan = "no"; // Updated to string type
+      this.isVegan = "no"; 
       this.isVeganState = null;
-      this.isGlutenFree = "no"; // Updated to string type
+      this.isGlutenFree = "no"; 
       this.isGlutenFreeState = null;
       this.servingSize = "";
       this.servingSizeState = null;
@@ -232,7 +252,8 @@ export default {
     removeIngredient(index) {
       this.ingredients.splice(index, 1);
     },
-        async handleSubmit() {
+
+    async handleSubmit() {
       if (!this.checkFormValidity()) {
         return;
       }
@@ -247,6 +268,8 @@ export default {
         console.log(this.isGlutenFree);
         console.log(this.servingSize);
 
+
+        const instructionsArray = this.instructions.split(",").map((instr) => instr.trim());
         const response = await this.axios.post(
           this.$root.store.server_domain + "/users/myrecepies",
           {
@@ -256,9 +279,11 @@ export default {
             ingredients: this.ingredients,
             timeToMake: this.timeToMake,
             likes: "0",
-            isVegan: this.isVegan === "yes", // Convert string to boolean
-            isGlutenFree: this.isGlutenFree === "yes", // Convert string to boolean
+            isVegan: this.isVegan, 
+            isGlutenFree: this.isGlutenFree, 
             servingSize: this.servingSize,
+            instructions: this.instructions,
+            analyzedInstructions: instructionsArray,
           },
           {
             withCredentials: true,
@@ -276,3 +301,4 @@ export default {
   },
 };
 </script>
+

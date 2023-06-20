@@ -1,8 +1,10 @@
 <template>
   <router-link
+
     :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
-    class="recipe-preview"
-  >
+    class="recipe-preview" 
+
+  > 
     <div class="recipe-body">
       <img v-if="image_load" :src="recipe.image" class="recipe-image" />
     </div>
@@ -19,11 +21,14 @@
 </template>
 
 <script>
+
 export default {
   mounted() {
     this.axios.get(this.recipe.image).then((i) => {
       this.image_load = true;
     });
+    console.log("thisss isss the recipe.id")
+    console.log(this.recipe.id)
   },
   data() {
     return {
@@ -34,7 +39,7 @@ export default {
     recipe: {
       type: Object,
       required: true
-    }
+    },
 
     // id: {
     //   type: Number,

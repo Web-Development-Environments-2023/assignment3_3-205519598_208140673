@@ -61,6 +61,8 @@ export default {
             params: { id: this.$route.params.recipeId }
           }
         );
+        console.log("this is the response")
+        console.log(response);
 
         // console.log("response.status", response.status);
         if (response.status !== 200) this.$router.replace("/NotFound");
@@ -79,6 +81,9 @@ export default {
         image,
         title
       } = response.data.recipe;
+
+      console.log("response.data.recipe")
+      console.log(response.data.recipe);
 
       let _instructions = analyzedInstructions
         .map((fstep) => {
