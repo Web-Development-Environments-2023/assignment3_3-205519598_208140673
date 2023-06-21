@@ -3,8 +3,6 @@
     <div id="nav">
       <router-link :to="{ name: 'main' }">Vue Recipes</router-link>|
       <router-link :to="{ name: 'search' }">Search</router-link>|
-      <router-link :to="{ name: 'myrecipespage' }">My Recipes</router-link>|
-      <router-link :to="{ name: 'model' }">Model</router-link>|
       <router-link :to="{ name: 'about' }">About</router-link>|
       {{ !$root.store.username }}
       <span v-if="!$root.store.username">
@@ -13,6 +11,12 @@
         <router-link :to="{ name: 'login' }">Login</router-link>|
       </span>
       <span v-else>
+        <router-link :to="{ name: 'favoritespage' }">Favorites</router-link>|
+        <router-link :to="{ name: 'myrecipespage' }">My Recipes</router-link>|
+        <router-link :to="{ name: 'familypage' }">Family Recipes</router-link>|
+
+        <router-link :to="{ name: 'model' }">Model</router-link>|
+
         {{ $root.store.username }}: <button @click="Logout">Logout</button>|
 
       </span>

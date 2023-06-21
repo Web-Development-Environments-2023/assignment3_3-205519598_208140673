@@ -1,23 +1,26 @@
 <template>
-  <router-link
-
-    :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
-    class="recipe-preview" 
-
-  > 
-    <div class="recipe-body">
-      <img v-if="image_load" :src="recipe.image" class="recipe-image" />
-    </div>
-    <div class="recipe-footer">
-      <div :title="recipe.title" class="recipe-title">
-        {{ recipe.title }}
+  <div class="recipe-preview">
+    <router-link 
+      :to="{ name: 'recipe', params: { recipeId: recipe.id } }" 
+      @click.native="sendLastWatch"
+    >
+      <div class="recipe-body">
+        <img v-if="image_load" :src="recipe.image" class="recipe-image" />
       </div>
-      <ul class="recipe-overview">
-        <li>{{ recipe.time_to_make }} minutes</li>
-        <li>{{ recipe.likes }} likes</li>
-      </ul>
+      <div class="recipe-footer">
+        <div :title="recipe.title" class="recipe-title">
+          {{ recipe.title }}
+        </div>
+        <ul class="recipe-overview">
+          <li>{{ recipe.time_to_make }} minutes</li>
+          <li>{{ recipe.likes }} likes</li>
+        </ul>
+      </div>
+    </router-link>
+    <div class="recipe-footer">
+      <button @click.stop="addFavorite">Add to Favorite</button>
     </div>
-  </router-link>
+  </div>
 </template>
 
 <script>
@@ -64,7 +67,46 @@ export default {
     //     return undefined;
     //   }
     // }
-  }
+  },
+  methods: {
+    async sendLastWatch() {
+      try {
+        // console.log("from the recipe preview::::::::::: ", this.recipe.id)
+        console.log("from the recipe preview::::::::::: ", this.recipe)
+
+        const response = await this.axios.post(
+          this.$root.store.server_domain + '/users/lastwatch',
+          { recipeId: this.recipe.id },
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          console.log("The Recipe successfully saved as LastWatch");
+        } else {
+          console.log("Failed to save the recipe as LastWatch");
+        }
+      } catch (error) {
+        console.error("Failed to save the recipe as LastWatch", error);
+      }
+    },
+    async addFavorite() {
+      console.log("addFavorite was called");
+      try {
+        const response = await this.axios.post(
+          this.$root.store.server_domain + '/users/favorites',
+          { recipeId: this.recipe.id },
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          alert("The Recipe successfully saved as favorite");
+        } else {
+          alert("Failed to save the recipe as favorite");
+        }
+      } catch (error) {
+        console.error("Failed to save the recipe as favorite", error);
+      }
+    },
+  },
+  
 };
 </script>
 

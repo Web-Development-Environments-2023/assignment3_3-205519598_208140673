@@ -33,6 +33,16 @@ const routes = [
     component: () => import("./pages/MyRecipesPage"),
   },
   {
+    path: "/favoritespage",
+    name: "favoritespage",
+    component: () => import("./pages/FavoritesPage"),
+  },
+  {
+    path: "/familypage",
+    name: "familypage",
+    component: () => import("./pages/FamilyPage"),
+  },
+  {
     path: "/model",
     name: "model",
     component: () => import("./components/CreateRecipeModal"),

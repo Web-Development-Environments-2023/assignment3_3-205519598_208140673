@@ -1,46 +1,48 @@
 <template>
   <div class="container">
     <h1 class="title">Main Page</h1>
-    <RecipePreviewList title="Randome Recipes" class="RandomRecipes center" />
-    <router-link v-if="!$root.store.username" to="/login" tag="button">You need to Login to vue this</router-link>
-    <router-link v-if="!$root.store.username" to="/login" tag="button">You need to Login to vue this</router-link>
-    {{ !$root.store.username }}
-     <RecipePreviewList
-      title="Last Viewed Recipes"
-      :class="{
-        RandomRecipes: true,
-        blur: !$root.store.username,
-        center: true
-      }"
-      disabled
-    ></RecipePreviewList>
-    <div
-      style="position: absolute;top: 70%;left: 50%;transform: translate(-50%, -50%);"
-    >
-      Centeredasdasdad
+
+    <div class="content-wrapper">
+      <!-- RecipePreviewList always on the left -->
+      <RecipePreviewList title="Random Recipes" class="RandomRecipes" />
+
+      <!-- Conditionally render the right side component based on user status -->
+      <div class="right-side">
+        <router-link v-if="!$root.store.username" to="/login" tag="button">You need to Login to view this</router-link>
+
+        <LastRecipesWatched v-else
+          title="Last Viewed Recipes"
+          class="lastrecipes"
+          disabled
+        ></LastRecipesWatched>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import RecipePreviewList from "../components/RecipePreviewList";
+import LastRecipesWatched from "../components/LastRecipesWatched";
+
 export default {
   components: {
-    RecipePreviewList
+    RecipePreviewList,
+    LastRecipesWatched
   }
 };
 </script>
 
 <style lang="scss" scoped>
+.content-wrapper {
+  display: flex; // this creates the two-column layout
+}
+
 .RandomRecipes {
   margin: 10px 0 10px;
+  flex: 1; // takes up half the space
 }
-.blur {
-  -webkit-filter: blur(5px); /* Safari 6.0 - 9.0 */
-  filter: blur(2px);
-}
-::v-deep .blur .recipe-preview {
-  pointer-events: none;
-  cursor: default;
+
+.right-side {
+  flex: 1; // takes up half the space
 }
 </style>

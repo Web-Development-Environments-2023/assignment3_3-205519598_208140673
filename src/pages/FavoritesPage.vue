@@ -1,6 +1,6 @@
 <template>
     <div>
-      <h1>My Recipes</h1>
+      <h1>Favorites Recipes</h1>
       <b-container>
         <b-row>
           <b-col v-for="r in recipes" :key="r.id">
@@ -15,7 +15,7 @@
   import RecipePreview from "../components/RecipePreview.vue";
   
   export default {
-    name: "MyRecipesPage",
+    name: "favoritespage",
     components: {
       RecipePreview,
     },
@@ -27,8 +27,8 @@
     methods: {
       fetchMyRecipes() {
         console.log("the data")
-        console.log(this.axios.get(this.$root.store.server_domain + "/users/myrecepies", { withCredentials: true }))
-        return this.axios.get(this.$root.store.server_domain + "/users/myrecepies", { withCredentials: true });
+        console.log(this.axios.get(this.$root.store.server_domain + "/users/favorites", { withCredentials: true }))
+        return this.axios.get(this.$root.store.server_domain + "/users/favorites", { withCredentials: true });
       },
     },
     async mounted() {
