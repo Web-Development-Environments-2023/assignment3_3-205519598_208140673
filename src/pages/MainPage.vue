@@ -4,7 +4,7 @@
 
     <div class="content-wrapper">
       <!-- RecipePreviewList always on the left -->
-      <RecipePreviewList title="Random Recipes" class="RandomRecipes" />
+      <!-- <RecipePreviewList title="Random Recipes" class="RandomRecipes" /> -->
 
       <!-- Conditionally render the right side component based on user status -->
       <div class="right-side">
@@ -26,7 +26,7 @@ import LastRecipesWatched from "../components/LastRecipesWatched";
 
 export default {
   components: {
-    RecipePreviewList,
+    // RecipePreviewList,
     LastRecipesWatched
   }
 };
