@@ -5,28 +5,31 @@
       @click.native="sendLastWatch"
     >
       <div class="recipe-body">
-        <img v-if="image_load" :src="recipe.image" class="recipe-image" />
+        <img v-if="image_load" :src="recipe.image" class="recipe-image" alt="Recipe Image" />
+        <div v-else class="loader">Loading Image...</div> <!-- Added loading text -->
       </div>
       <div class="recipe-footer">
         <div :title="recipe.title" class="recipe-title">
           {{ recipe.title }}
         </div>
         <ul class="recipe-overview">
-          <li>{{ recipe.time_to_make }} minutes</li>
-          <li>{{ recipe.likes }} likes</li>
+          <li><strong>Time:</strong> {{ recipe.readyInMinutes }} minutes</li>
+          <li><strong>Likes:</strong> {{ recipe.aggregateLikes }}</li>
         </ul>
       </div>
     </router-link>
-    <div class="recipe-footer">
-      <button @click.stop="addFavorite">Add to Favorite</button>
+    <div class="recipe-actions">
+      <button class="favorite-button" @click.stop="addFavorite">Add to Favorite</button>
     </div>
   </div>
 </template>
+
 
 <script>
 
 export default {
   mounted() {
+    console.log("Recipe data: ", this.recipe);
     this.axios.get(this.recipe.image).then((i) => {
       this.image_load = true;
     });
@@ -117,7 +120,14 @@ export default {
   height: 100%;
   position: relative;
   margin: 10px 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Added shadow for depth */
+  transition: 0.3s;
 }
+
+.recipe-preview:hover {
+  box-shadow: 0 0 20px rgba(0,0,0,0.2); /* Enhance shadow on hover */
+}
+
 .recipe-preview > .recipe-body {
   width: 100%;
   height: 200px;
@@ -125,64 +135,60 @@ export default {
 }
 
 .recipe-preview .recipe-body .recipe-image {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-  margin-bottom: auto;
   display: block;
-  width: 98%;
-  height: auto;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the aspect ratio of images */
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-weight: bold;
 }
 
 .recipe-preview .recipe-footer {
   width: 100%;
-  height: 50%;
-  overflow: hidden;
+  padding: 10px;
+  background-color: #f9f9f9; /* Slightly gray background */
 }
 
 .recipe-preview .recipe-footer .recipe-title {
-  padding: 10px 10px;
-  width: 100%;
-  font-size: 12pt;
+  font-size: 14pt;
+  font-weight: bold;
   text-align: left;
-  white-space: nowrap;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .recipe-preview .recipe-footer ul.recipe-overview {
-  padding: 5px 10px;
-  width: 100%;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+  list-style-type: none; /* Remove bullets */
+  padding: 0;
   display: flex;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex: 1 auto;
-  -ms-flex: 1 auto;
-  flex: 1 auto;
-  table-layout: fixed;
-  margin-bottom: 0px;
+  justify-content: space-between; /* Distribute items evenly */
+  font-size: 12pt;
 }
 
-.recipe-preview .recipe-footer ul.recipe-overview li {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  -ms-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex-grow: 1;
-  flex-grow: 1;
-  width: 90px;
-  display: table-cell;
-  text-align: center;
+.recipe-actions {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+}
+
+.favorite-button {
+  padding: 5px 10px;
+  background-color: #ff47ea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.favorite-button:hover {
+  background-color: #ff7f50;
 }
 </style>
