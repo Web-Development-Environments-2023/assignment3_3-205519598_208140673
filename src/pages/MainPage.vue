@@ -4,14 +4,14 @@
 
     <div class="content-wrapper">
       <!-- RecipePreviewList always on the left -->
-      <!-- <RecipePreviewList title="Random Recipes" class="RandomRecipes" /> -->
+      <RecipePreviewList title="Explore This Recipes!" class="RandomRecipes" />
 
       <!-- Conditionally render the right side component based on user status -->
       <div class="right-side">
         <router-link v-if="!$root.store.username" to="/login" tag="button">You need to Login to view this</router-link>
 
         <LastRecipesWatched v-else
-          title="Last Viewed Recipes"
+          title="Last Watched Recipes"
           class="lastrecipes"
           disabled
         ></LastRecipesWatched>
@@ -26,7 +26,7 @@ import LastRecipesWatched from "../components/LastRecipesWatched";
 
 export default {
   components: {
-    // RecipePreviewList,
+    RecipePreviewList,
     LastRecipesWatched
   }
 };

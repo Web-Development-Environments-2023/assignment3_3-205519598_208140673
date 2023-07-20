@@ -37,15 +37,18 @@ export default {
     async updateRecipes() {
       try {
         const response = await this.axios.get(
-          this.$root.store.server_domain + "/recipes/randomrecipes", { withCredentials: true }
+          // this.$root.store.server_domain + "/recipes/randomrecipes", { withCredentials: true }
           // "https://test-for-3-2.herokuapp.com/recipes/random"
         );
 
-        // console.log(response);
-        const recipes = response.data.recipes;
+        console.log(response);
+        const recipes = response.data;
         this.recipes = [];
+        console.log("this is the rendom recpis:")
+
+
         this.recipes.push(...recipes);
-        console.log(this.recipes);
+
       } catch (error) {
         console.log(error);
       }

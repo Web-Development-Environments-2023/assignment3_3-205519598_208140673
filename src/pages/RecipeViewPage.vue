@@ -71,6 +71,9 @@ export default {
         this.$router.replace("/NotFound");
         return;
       }
+      console.log(response.data)
+      console.log("response.data.recipe")
+      console.log(response.data.recipe);
 
       let {
         analyzedInstructions,
@@ -80,17 +83,38 @@ export default {
         readyInMinutes,
         image,
         title
-      } = response.data.recipe;
+      } = response.data;
 
+      response.data.recipe
       console.log("response.data.recipe")
       console.log(response.data.recipe);
 
-      let _instructions = analyzedInstructions
-        .map((fstep) => {
-          fstep.steps[0].step = fstep.name + fstep.steps[0].step;
-          return fstep.steps;
-        })
-        .reduce((a, b) => [...a, ...b], []);
+      //for id that is less then 9999990
+      // let _instructions = analyzedInstructions
+      //   .map((fstep) => {
+      //     fstep.steps[0].step = fstep.name + fstep.steps[0].step;
+      //     return fstep.steps;
+      //   })
+      //   .reduce((a, b) => [...a, ...b], []);
+
+      //for id that is begger or equle to 999999
+      // let _instructions = analyzedInstructions.map((step) => step.toLowerCase());
+      console.log("this.$route.params.recipeId")
+      console.log(this.$route.params.recipeId)
+      let _instructions;
+      // _instructions = analyzedInstructions.map((step) => step.toLowerCase());
+
+      if (this.$route.params.recipeId < 9999990) {
+        _instructions = analyzedInstructions
+          .map((fstep) => {
+            fstep.steps[0].step = fstep.name + fstep.steps[0].step;
+            return fstep.steps;
+          })
+          .reduce((a, b) => [...a, ...b], []);
+      } else {
+        _instructions = analyzedInstructions.map((step) => step.toLowerCase());
+      }
+
 
       let _recipe = {
         instructions,

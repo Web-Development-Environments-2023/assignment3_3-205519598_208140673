@@ -52,10 +52,10 @@ export default {
     //   type: String,
     //   required: true
     // },
-    // readyInMinutes: {
-    //   type: Number,
-    //   required: true
-    // },
+    readyInMinutes: {
+      type: Number,
+      required: true
+    },
     // image: {
     //   type: String,
     //   required: true
