@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <div>
     <form @submit.prevent="onSubmit" class="form-inline my-4">
       <input v-model="searchQuery" placeholder="Search recipes" class="form-control mr-sm-2">
@@ -93,4 +93,4 @@ export default {
   },
 };
 
-</script> -->
+</script>

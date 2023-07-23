@@ -116,12 +116,13 @@ export default {
 <style scoped>
 .recipe-preview {
   display: inline-block;
-  width: 90%;
-  height: 100%;
+  width: 200px; /* Set the width to your desired size, for example, 300px */
+  height: 200px; /* Set the height to your desired size, for example, 400px */
   position: relative;
-  margin: 10px 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* Added shadow for depth */
+  margin: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
   transition: 0.3s;
+  float: left; /* Add float to make elements appear side by side */
 }
 
 .recipe-preview:hover {
@@ -156,20 +157,23 @@ export default {
 }
 
 .recipe-preview .recipe-footer .recipe-title {
-  font-size: 14pt;
+  font-size: 30px; /* Increase font size for the title */
   font-weight: bold;
   text-align: left;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-bottom: 8px; /* Add some space between the title and other information */
+  font-family: Calibri, Arial, sans-serif; /* Set the font-family to Calibri, with fallbacks */
 }
-
 .recipe-preview .recipe-footer ul.recipe-overview {
   list-style-type: none; /* Remove bullets */
   padding: 0;
   display: flex;
   justify-content: space-between; /* Distribute items evenly */
-  font-size: 12pt;
+  font-size: 15pt;
+  font-family: Calibri, Arial, sans-serif; /* Set the font-family to Calibri, with fallbacks */
+
 }
 
 .recipe-actions {

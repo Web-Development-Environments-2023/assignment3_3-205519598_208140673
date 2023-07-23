@@ -5,7 +5,7 @@
     <div class="content-wrapper">
       <!-- RecipePreviewList always on the left -->
       <RecipePreviewList title="Explore This Recipes!" class="RandomRecipes" />
-
+      
       <!-- Conditionally render the right side component based on user status -->
       <div class="right-side">
         <router-link v-if="!$root.store.username" to="/login" tag="button">You need to Login to view this</router-link>
