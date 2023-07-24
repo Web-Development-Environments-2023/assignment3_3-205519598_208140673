@@ -7,6 +7,8 @@
       <div class="recipe-body">
         <img v-if="image_load" :src="recipe.image" class="recipe-image" alt="Recipe Image" />
         <div v-else class="loader">Loading Image...</div>
+        <div v-if="recipe.is_vegan === 'yes'" class="vegan-symbol">🌱</div>
+        <div v-if="recipe.is_gluten_free === 'yes'" class="gluten-free-symbol">🌾</div>
       </div>
       <div class="recipe-footer">
         <div :title="recipe.title" class="recipe-title">
@@ -20,9 +22,11 @@
     </router-link>
     <div class="recipe-actions">
       <button class="favorite-button" @click.stop="addFavorite" :disabled="isFavorite">Add to Favorite</button>
+
     </div>
   </div>
 </template>
+
 
 
 <script>
@@ -61,10 +65,10 @@ export default {
     //   type: String,
     //   required: true
     // },
-    readyInMinutes: {
-      type: Number,
-      required: true
-    },
+    // readyInMinutes: {
+    //   type: Number,
+    //   required: true
+    // },
     // image: {
     //   type: String,
     //   required: true
@@ -221,4 +225,19 @@ export default {
     color: #ffffff; /* White text */
     cursor: not-allowed; /* Display a "not allowed" cursor on hover */
   }
+
+  .vegan-symbol,.gluten-free-symbol {
+  position: absolute;
+  top: 10px;
+  font-size: 24px;
+}
+
+.vegan-symbol {
+  left: 10px;
+}
+
+.gluten-free-symbol {
+  right: 10px;
+}
+
 </style>
