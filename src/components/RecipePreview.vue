@@ -1,40 +1,61 @@
 <template>
-  <router-link
-    :to="{ name: 'recipe', params: { recipeId: recipe.id } }"
-    class="recipe-preview"
-  >
-    <div class="recipe-body">
-      <img v-if="image_load" :src="recipe.image" class="recipe-image" />
-    </div>
-    <div class="recipe-footer">
-      <div :title="recipe.title" class="recipe-title">
-        {{ recipe.title }}
+  <div class="recipe-preview" :class="{ watched: isWatched }">
+    <router-link 
+      :to="{ name: 'recipe', params: { recipeId: recipe.id } }" 
+      @click.native="sendLastWatch"
+    >
+      <div class="recipe-body">
+        <img v-if="image_load" :src="recipe.image" class="recipe-image" alt="Recipe Image" />
+        <div v-else class="loader">Loading Image...</div>
+        <div v-if="recipe.is_vegan === 'yes'" class="vegan-symbol">🌱</div>
+        <div v-if="recipe.is_gluten_free === 'yes'" class="gluten-free-symbol">🌾</div>
       </div>
-      <ul class="recipe-overview">
-        <li>{{ recipe.readyInMinutes }} minutes</li>
-        <li>{{ recipe.aggregateLikes }} likes</li>
-      </ul>
+      <div class="recipe-footer">
+        <div :title="recipe.title" class="recipe-title">
+          {{ recipe.title }}
+        </div>
+        <ul class="recipe-overview">
+          <li><strong>Time:</strong> {{ recipe.readyInMinutes }} minutes</li>
+          <li><strong>Likes:</strong> {{ recipe.aggregateLikes }}</li>
+        </ul>
+      </div>
+    </router-link>
+    <div class="recipe-actions">
+      <button class="favorite-button" @click.stop="addFavorite" :disabled="isFavorite">Add to Favorite</button>
+
     </div>
-  </router-link>
+  </div>
 </template>
 
+
+
 <script>
+
 export default {
-  mounted() {
+  async created() {
+    console.log("Recipe data: ", this.recipe);
     this.axios.get(this.recipe.image).then((i) => {
       this.image_load = true;
     });
+
+    try {
+      const response = await this.axios.get(this.$root.store.server_domain + '/users/favorites', { withCredentials: true });
+      this.isFavorite = response.data.find(recipe => recipe.id === this.recipe.id) ? true : false;
+    } catch (error) {
+      console.error("Failed to get favorite recipes", error);
+    }
   },
   data() {
     return {
-      image_load: false
+      image_load: false,
+      isFavorite: false
     };
   },
   props: {
     recipe: {
       type: Object,
       required: true
-    }
+    },
 
     // id: {
     //   type: Number,
@@ -59,83 +80,164 @@ export default {
     //     return undefined;
     //   }
     // }
+  },
+  methods: {
+    async sendLastWatch() {
+      try {
+        // console.log("from the recipe preview::::::::::: ", this.recipe.id)
+        console.log("from the recipe preview::::::::::: ", this.recipe)
+
+        const response = await this.axios.post(
+          this.$root.store.server_domain + '/users/lastwatch',
+          { recipeId: this.recipe.id },
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          console.log("The Recipe successfully saved as LastWatch");
+          const watchedRecipes = JSON.parse(sessionStorage.getItem('watchedRecipes') || '[]');
+          console.log("watchedRecipes: ", watchedRecipes)
+          if (!watchedRecipes.includes(this.recipe.id)) {
+              watchedRecipes.push(this.recipe.id);
+              sessionStorage.setItem('watchedRecipes', JSON.stringify(watchedRecipes));
+            }
+        } else {
+          console.log("Failed to save the recipe as LastWatch");
+        }
+      } catch (error) {
+        console.error("Failed to save the recipe as LastWatch", error);
+      }
+    },
+    async addFavorite() {
+      console.log("addFavorite was called");
+      try {
+        const response = await this.axios.post(
+          this.$root.store.server_domain + '/users/favorites',
+          { recipeId: this.recipe.id },
+          { withCredentials: true }
+        );
+        if (response.status === 200) {
+          alert("The Recipe successfully saved as favorite");
+        } else {
+          alert("Failed to save the recipe as favorite");
+        }
+      } catch (error) {
+        console.error("Failed to save the recipe as favorite", error);
+      }
+    },
+  },
+  computed: {
+  isWatched() {
+    const watchedRecipes = JSON.parse(sessionStorage.getItem('watchedRecipes') || '[]');
+    return watchedRecipes.includes(this.recipe.id);
   }
+}
+  
 };
 </script>
 
 <style scoped>
-.recipe-preview {
-  display: inline-block;
-  width: 90%;
-  height: 100%;
-  position: relative;
-  margin: 10px 10px;
+.watched {
+  opacity: 0.5;
 }
+.recipe-preview {
+  display: inline-flex;
+  width: 200px; /* Adjust width if necessary */
+  height: auto;
+  position: relative;
+  margin: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
+  flex-direction: column;  
+}
+
+.recipe-preview:hover {
+  box-shadow: 0 0 20px rgba(0,0,0,0.2); /* Enhance shadow on hover */
+}
+
 .recipe-preview > .recipe-body {
   width: 100%;
-  height: 200px;
+  /* height: 250px; */
   position: relative;
 }
 
 .recipe-preview .recipe-body .recipe-image {
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: auto;
-  margin-bottom: auto;
   display: block;
-  width: 98%;
-  height: auto;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Ensures the aspect ratio of images */
+}
+
+.loader {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-weight: bold;
 }
 
 .recipe-preview .recipe-footer {
   width: 100%;
-  height: 50%;
-  overflow: hidden;
+  padding: 10px;
+  background-color: #f9f9f9; /* Slightly gray background */
 }
 
 .recipe-preview .recipe-footer .recipe-title {
-  padding: 10px 10px;
-  width: 100%;
-  font-size: 12pt;
+  font-size: 15px; /* Increase font size for the title */
+  font-weight: bold;
   text-align: left;
-  white-space: nowrap;
   overflow: hidden;
-  -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 8px; /* Add some space between the title and other information */
+  font-family: Calibri, Arial, sans-serif; /* Set the font-family to Calibri, with fallbacks */
 }
-
 .recipe-preview .recipe-footer ul.recipe-overview {
-  padding: 5px 10px;
-  width: 100%;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+  list-style-type: none; /* Remove bullets */
+  padding: 0;
   display: flex;
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex: 1 auto;
-  -ms-flex: 1 auto;
-  flex: 1 auto;
-  table-layout: fixed;
-  margin-bottom: 0px;
+  justify-content: space-between; /* Distribute items evenly */
+  font-size: 10pt;
+  font-family: Calibri, Arial, sans-serif; /* Set the font-family to Calibri, with fallbacks */
+
 }
 
-.recipe-preview .recipe-footer ul.recipe-overview li {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  -o-box-flex: 1;
-  -ms-box-flex: 1;
-  box-flex: 1;
-  -webkit-flex-grow: 1;
-  flex-grow: 1;
-  width: 90px;
-  display: table-cell;
-  text-align: center;
+.recipe-actions {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
 }
+
+.favorite-button {
+  padding: 5px 10px;
+  background-color: #ff47ea;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.favorite-button:hover {
+  background-color: #ff7f50;
+}
+.favorite-button:disabled {
+    background-color: #b3b3b3; /* Grayed out background */
+    color: #ffffff; /* White text */
+    cursor: not-allowed; /* Display a "not allowed" cursor on hover */
+  }
+
+  .vegan-symbol,.gluten-free-symbol {
+  position: absolute;
+  top: 10px;
+  font-size: 24px;
+}
+
+.vegan-symbol {
+  left: 10px;
+}
+
+.gluten-free-symbol {
+  right: 10px;
+}
+
 </style>

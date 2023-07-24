@@ -24,6 +24,7 @@ import {
   AlertPlugin,
   ToastPlugin,
   LayoutPlugin,
+  BootstrapVue,
 } from "bootstrap-vue";
 [
   FormGroupPlugin,
@@ -36,6 +37,7 @@ import {
   AlertPlugin,
   ToastPlugin,
   LayoutPlugin,
+  BootstrapVue,
 ].forEach((x) => Vue.use(x));
 Vue.use(Vuelidate);
 
@@ -67,6 +69,7 @@ Vue.use(VueAxios, axios);
 Vue.config.productionTip = false;
 
 const shared_data = {
+  server_domain: "http://localhost",
   username: localStorage.username,
   login(username) {
     localStorage.setItem("username", username);
