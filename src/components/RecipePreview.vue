@@ -1,12 +1,12 @@
 <template>
-  <div class="recipe-preview">
+  <div class="recipe-preview" :class="{ watched: isWatched }">
     <router-link 
       :to="{ name: 'recipe', params: { recipeId: recipe.id } }" 
       @click.native="sendLastWatch"
     >
       <div class="recipe-body">
         <img v-if="image_load" :src="recipe.image" class="recipe-image" alt="Recipe Image" />
-        <div v-else class="loader">Loading Image...</div> <!-- Added loading text -->
+        <div v-else class="loader">Loading Image...</div>
       </div>
       <div class="recipe-footer">
         <div :title="recipe.title" class="recipe-title">
@@ -19,7 +19,7 @@
       </div>
     </router-link>
     <div class="recipe-actions">
-      <button class="favorite-button" @click.stop="addFavorite">Add to Favorite</button>
+      <button class="favorite-button" @click.stop="addFavorite" :disabled="isFavorite">Add to Favorite</button>
     </div>
   </div>
 </template>
@@ -28,17 +28,23 @@
 <script>
 
 export default {
-  mounted() {
+  async created() {
     console.log("Recipe data: ", this.recipe);
     this.axios.get(this.recipe.image).then((i) => {
       this.image_load = true;
     });
-    console.log("thisss isss the recipe.id")
-    console.log(this.recipe.id)
+
+    try {
+      const response = await this.axios.get(this.$root.store.server_domain + '/users/favorites', { withCredentials: true });
+      this.isFavorite = response.data.find(recipe => recipe.id === this.recipe.id) ? true : false;
+    } catch (error) {
+      console.error("Failed to get favorite recipes", error);
+    }
   },
   data() {
     return {
-      image_load: false
+      image_load: false,
+      isFavorite: false
     };
   },
   props: {
@@ -84,6 +90,12 @@ export default {
         );
         if (response.status === 200) {
           console.log("The Recipe successfully saved as LastWatch");
+          const watchedRecipes = JSON.parse(sessionStorage.getItem('watchedRecipes') || '[]');
+          console.log("watchedRecipes: ", watchedRecipes)
+          if (!watchedRecipes.includes(this.recipe.id)) {
+              watchedRecipes.push(this.recipe.id);
+              sessionStorage.setItem('watchedRecipes', JSON.stringify(watchedRecipes));
+            }
         } else {
           console.log("Failed to save the recipe as LastWatch");
         }
@@ -109,20 +121,29 @@ export default {
       }
     },
   },
+  computed: {
+  isWatched() {
+    const watchedRecipes = JSON.parse(sessionStorage.getItem('watchedRecipes') || '[]');
+    return watchedRecipes.includes(this.recipe.id);
+  }
+}
   
 };
 </script>
 
 <style scoped>
+.watched {
+  opacity: 0.5;
+}
 .recipe-preview {
-  display: inline-block;
-  width: 200px; /* Set the width to your desired size, for example, 300px */
-  height: 200px; /* Set the height to your desired size, for example, 400px */
+  display: inline-flex;
+  width: 200px; /* Adjust width if necessary */
+  height: auto;
   position: relative;
-  margin: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Added shadow for depth */
+  margin: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   transition: 0.3s;
-  float: left; /* Add float to make elements appear side by side */
+  flex-direction: column;  
 }
 
 .recipe-preview:hover {
@@ -131,7 +152,7 @@ export default {
 
 .recipe-preview > .recipe-body {
   width: 100%;
-  height: 200px;
+  /* height: 250px; */
   position: relative;
 }
 
@@ -157,7 +178,7 @@ export default {
 }
 
 .recipe-preview .recipe-footer .recipe-title {
-  font-size: 30px; /* Increase font size for the title */
+  font-size: 15px; /* Increase font size for the title */
   font-weight: bold;
   text-align: left;
   overflow: hidden;
@@ -171,7 +192,7 @@ export default {
   padding: 0;
   display: flex;
   justify-content: space-between; /* Distribute items evenly */
-  font-size: 15pt;
+  font-size: 10pt;
   font-family: Calibri, Arial, sans-serif; /* Set the font-family to Calibri, with fallbacks */
 
 }
@@ -195,4 +216,9 @@ export default {
 .favorite-button:hover {
   background-color: #ff7f50;
 }
+.favorite-button:disabled {
+    background-color: #b3b3b3; /* Grayed out background */
+    color: #ffffff; /* White text */
+    cursor: not-allowed; /* Display a "not allowed" cursor on hover */
+  }
 </style>

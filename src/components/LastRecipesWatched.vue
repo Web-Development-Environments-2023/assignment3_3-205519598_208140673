@@ -57,8 +57,27 @@
   </script>
   
   <style lang="scss" scoped>
-  .container {
-    min-height: 400px;
+  .title {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .update-button {
+    margin-bottom: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .recipes-container {
+    margin-top: 20px;
+    display: flex;  // added to make the recipe previews display in a row
+    flex-wrap: wrap;  // added to allow the recipe previews to wrap onto the next line if the viewport width is too narrow
+    justify-content: space-around;  // added to evenly distribute the recipe previews
+  }
+  
+  .recipe-col {
+    margin: 20px;  // adjusted to give both vertical and horizontal margins
   }
   </style>
   
